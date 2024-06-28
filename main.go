@@ -16,6 +16,7 @@ func main() {
 
 	app.Element("h1", "GoGui")
 	app.Label("This is a project for learning purposes.")
+	app.Button("Click me!")
 
 	println("WARNING: This project is still in development.")
 	err = app.Run()

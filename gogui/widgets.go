@@ -13,3 +13,8 @@ func (app *App) Label(text string) (int, error) {
 	widget := gogui_widgets.NewLabel(text)
 	return app.widgetTree.AddWidget(widget), nil
 }
+
+func (app *App) Button(text string) (int, error) {
+	widget := gogui_widgets.NewButton(text)
+	return app.widgetTree.AddWidget(widget), nil
+}
