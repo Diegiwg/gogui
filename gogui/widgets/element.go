@@ -17,3 +17,15 @@ func NewElement(tag string, content string) *Element {
 		content: content,
 	}
 }
+
+func (element *Element) GetTag() string {
+	return element.tag
+}
+
+func (element *Element) GetContent() string {
+	return element.content
+}
+
+func (element *Element) SetContent(content string) {
+	element.content = content
+}
