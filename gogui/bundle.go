@@ -2,8 +2,9 @@ package gogui
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
+
+	gogui_css "github.com/Diegiwg/gogui/gogui/css"
+	gogui_js "github.com/Diegiwg/gogui/gogui/js"
 )
 
 func bundleMeta() string {
@@ -12,57 +13,13 @@ func bundleMeta() string {
 
 func bundleJs() string {
 	data := "<script type=\"module\" defer>%s</script>"
-
-	dirPath := filepath.Join("gogui", "js")
-	dir, err := os.ReadDir(dirPath)
-	if err != nil {
-		println(err.Error())
-		return ""
-	}
-
-	content := ""
-	for _, entry := range dir {
-		if entry.IsDir() {
-			continue
-		}
-
-		filePath := filepath.Join(dirPath, entry.Name())
-		f, err := os.ReadFile(filePath)
-		if err != nil {
-			panic(err)
-		}
-
-		content += string(f) + "\n"
-	}
-
+	content := gogui_js.ButtonHandler
 	return fmt.Sprintf(data, content)
 }
 
 func bundleCss() string {
 	data := "<style>%s</style>"
-
-	dirPath := filepath.Join("gogui", "css")
-	dir, err := os.ReadDir(dirPath)
-	if err != nil {
-		println(err.Error())
-		return ""
-	}
-
-	content := ""
-	for _, entry := range dir {
-		if entry.IsDir() {
-			continue
-		}
-
-		filePath := filepath.Join(dirPath, entry.Name())
-		f, err := os.ReadFile(filePath)
-		if err != nil {
-			panic(err)
-		}
-
-		content += string(f) + "\n"
-	}
-
+	content := gogui_css.GridWidget
 	return fmt.Sprintf(data, content)
 }
 

@@ -34,7 +34,6 @@ func main() {
 	app.Button("Click me!", clickHandler(&counter, clickLabel))
 
 	_, grid := app.Grid(3, 3)
-
 	for i := 1; i <= 9; i++ {
 		el := grid.Element("p", strconv.Itoa(i))
 		grid.Child(el)
