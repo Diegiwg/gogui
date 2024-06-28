@@ -14,9 +14,7 @@ func main() {
 		panic(err)
 	}
 
-	root, _, _ := app.Element("h1")
-	root.Label("GoGui")
-
+	app.Element("h1", "GoGui")
 	app.Label("This is a project for learning purposes.")
 
 	println("WARNING: This project is still in development.")
