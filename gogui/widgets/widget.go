@@ -31,10 +31,17 @@ func (tree *WidgetTree) GetWidget(id int) *Widget {
 func (tree *WidgetTree) Render() string {
 	var html string = ""
 
-	for id, widget := range tree.Widgets {
-		w := *widget
-		html += fmt.Sprint(w.Html(strconv.Itoa(id)))
+	counter := len(tree.Widgets)
+	if counter == 0 {
+		return html
 	}
 
+	for i := 1; i <= counter; i++ {
+		w := *tree.Widgets[i]
+		html += fmt.Sprint(w.Html(strconv.Itoa(i)))
+		html += "\n"
+	}
+
+	html = html[:len(html)-1]
 	return html
 }
