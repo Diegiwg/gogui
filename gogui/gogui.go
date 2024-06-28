@@ -3,6 +3,8 @@ package gogui
 import (
 	"fmt"
 	"net/http"
+
+	widgets "github.com/Diegiwg/gogui/gogui/widgets"
 )
 
 type AppConfig struct {
@@ -36,7 +38,8 @@ func (config *AppConfig) serverAddress() string {
 }
 
 type App struct {
-	Config *AppConfig
+	config     *AppConfig
+	widgetTree *widgets.WidgetTree
 }
 
 func NewApp(config *AppConfig) (*App, error) {
@@ -50,15 +53,20 @@ func NewApp(config *AppConfig) (*App, error) {
 	}
 
 	return &App{
-		Config: config,
+		config:     config,
+		widgetTree: widgets.NewWidgetTree(),
 	}, nil
 }
 
 func (a *App) Run() error {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Server is running on port " + fmt.Sprint(*a.Config.ServerPort)))
+		html := "<html><head><title>gogui</title></head><body>%s</body></html>"
+
+		w.Write([]byte(
+			fmt.Sprintf(html, a.widgetTree.Render()),
+		))
 	})
 
-	println("Server is running on http://" + a.Config.serverAddress())
-	return http.ListenAndServe(a.Config.serverAddress(), nil)
+	println("Server is running on http://" + a.config.serverAddress())
+	return http.ListenAndServe(a.config.serverAddress(), nil)
 }

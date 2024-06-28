@@ -1,9 +1,12 @@
 package main
 
-import "github.com/Diegiwg/gogui/gogui"
+import (
+	"github.com/Diegiwg/gogui/gogui"
+)
 
 func main() {
 	config := gogui.NewConfig()
+	*config.ServerAddr = "127.0.0.1"
 	*config.ServerPort = 6969
 
 	app, err := gogui.NewApp(config)
@@ -11,6 +14,12 @@ func main() {
 		panic(err)
 	}
 
+	root, _, _ := app.Element("h1")
+	root.Label("GoGui")
+
+	app.Label("This is a project for learning purposes.")
+
+	println("WARNING: This project is still in development.")
 	err = app.Run()
 	if err != nil {
 		panic(err)
