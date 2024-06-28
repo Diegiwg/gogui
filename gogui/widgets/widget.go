@@ -1,47 +1,31 @@
 package gogui_widgets
 
-import (
-	"fmt"
-	"strconv"
-)
-
-type Widget interface {
-	Html(id string) string
+type Widget struct {
+	Kind string
+	Html func(id string) string
+	Data map[string]interface{}
 }
 
-type WidgetTree struct {
-	Widgets map[int]*Widget
-}
-
-func NewWidgetTree() *WidgetTree {
-	return &WidgetTree{
-		Widgets: make(map[int]*Widget),
+func NewWidget() *Widget {
+	return &Widget{
+		Data: make(map[string]interface{}),
 	}
 }
 
-func (tree *WidgetTree) AddWidget(widget Widget) int {
-	tree.Widgets[len(tree.Widgets)+1] = &widget
-	return len(tree.Widgets)
+func (widget *Widget) SetData(key string, value interface{}) {
+	widget.Data[key] = value
 }
 
-func (tree *WidgetTree) GetWidget(id int) *Widget {
-	return tree.Widgets[id]
+func (widget *Widget) GetData(key string) interface{} {
+	return widget.Data[key]
 }
 
-func (tree *WidgetTree) Render() string {
-	var html string = ""
+func (widget *Widget) AddWidget(newWidget *Widget) {
+	switch widget.Kind {
+	case "Grid":
+		children := widget.GetData("children").(map[int]*Widget)
+		children[len(children)+1] = newWidget
 
-	counter := len(tree.Widgets)
-	if counter == 0 {
-		return html
+		widget.SetData("children", children)
 	}
-
-	for i := 1; i <= counter; i++ {
-		w := *tree.Widgets[i]
-		html += fmt.Sprint(w.Html(strconv.Itoa(i)))
-		html += "\n"
-	}
-
-	html = html[:len(html)-1]
-	return html
 }

@@ -39,7 +39,31 @@ func bundleJs() string {
 }
 
 func bundleCss() string {
-	return ""
+	data := "<style>%s</style>"
+
+	dirPath := filepath.Join("gogui", "css")
+	dir, err := os.ReadDir(dirPath)
+	if err != nil {
+		println(err.Error())
+		return ""
+	}
+
+	content := ""
+	for _, entry := range dir {
+		if entry.IsDir() {
+			continue
+		}
+
+		filePath := filepath.Join(dirPath, entry.Name())
+		f, err := os.ReadFile(filePath)
+		if err != nil {
+			panic(err)
+		}
+
+		content += string(f)
+	}
+
+	return fmt.Sprintf(data, content)
 }
 
 func bundle() string {

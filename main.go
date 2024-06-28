@@ -7,10 +7,10 @@ import (
 	gogui_widgets "github.com/Diegiwg/gogui/gogui/widgets"
 )
 
-func clickHandler(counter *int, label *gogui_widgets.Label) func(ctx *gogui.HttpCtx) {
+func clickHandler(counter *int, label *gogui_widgets.Widget) func(ctx *gogui.HttpCtx) {
 	return func(ctx *gogui.HttpCtx) {
 		*counter++
-		label.SetText("Click Counter: " + strconv.Itoa(*counter))
+		label.SetData("text", "Click Counter: "+strconv.Itoa(*counter))
 	}
 }
 
@@ -30,8 +30,15 @@ func main() {
 	app.Element("hr", "")
 
 	counter := 0
-	clickLabel, _, _ := app.Label("Click Counter: " + strconv.Itoa(counter))
+	_, clickLabel := app.Label("Click Counter: " + strconv.Itoa(counter))
 	app.Button("Click me!", clickHandler(&counter, clickLabel))
+
+	_, grid := app.Grid(3, 3)
+
+	for i := 1; i <= 9; i++ {
+		el := grid.Element("p", strconv.Itoa(i))
+		grid.AddWidget(el)
+	}
 
 	println("WARNING: This project is still in development.")
 	err = app.Run()
