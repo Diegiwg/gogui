@@ -32,7 +32,7 @@ func bundleJs() string {
 			panic(err)
 		}
 
-		content += string(f)
+		content += string(f) + "\n"
 	}
 
 	return fmt.Sprintf(data, content)
@@ -60,7 +60,7 @@ func bundleCss() string {
 			panic(err)
 		}
 
-		content += string(f)
+		content += string(f) + "\n"
 	}
 
 	return fmt.Sprintf(data, content)
@@ -73,7 +73,7 @@ func bundle() string {
 	html += bundleJs()
 	html += bundleCss()
 
-	html += "</head><body>%s</body></html>"
+	html += "</head><body>"
 
 	return html
 }
