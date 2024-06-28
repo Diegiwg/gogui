@@ -37,7 +37,7 @@ func main() {
 
 	for i := 1; i <= 9; i++ {
 		el := grid.Element("p", strconv.Itoa(i))
-		grid.AddWidget(el)
+		grid.Child(el)
 	}
 
 	println("WARNING: This project is still in development.")

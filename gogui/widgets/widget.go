@@ -20,7 +20,7 @@ func (widget *Widget) GetData(key string) interface{} {
 	return widget.Data[key]
 }
 
-func (widget *Widget) AddWidget(newWidget *Widget) {
+func (widget *Widget) Child(newWidget *Widget) {
 	switch widget.Kind {
 	case "Grid":
 		children := widget.GetData("children").(map[int]*Widget)
