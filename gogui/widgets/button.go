@@ -7,7 +7,7 @@ type Button struct {
 }
 
 func (button *Button) Html(id string) string {
-	return fmt.Sprintf("<button id=\"%s\">%s</button>", id, button.text)
+	return fmt.Sprintf("<button id=\"%s\" onclick=\"buttonActionTrigger(this)\">%s</button>", id, button.text)
 }
 
 func NewButton(text string) *Button {

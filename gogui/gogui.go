@@ -40,6 +40,7 @@ func (config *AppConfig) serverAddress() string {
 type App struct {
 	config     *AppConfig
 	widgetTree *widgets.WidgetTree
+	actions    map[string]func(ctx *HttpCtx)
 }
 
 func NewApp(config *AppConfig) (*App, error) {
@@ -55,18 +56,17 @@ func NewApp(config *AppConfig) (*App, error) {
 	return &App{
 		config:     config,
 		widgetTree: widgets.NewWidgetTree(),
+		actions:    make(map[string]func(ctx *HttpCtx)),
 	}, nil
 }
 
 func (a *App) Run() error {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		html := "<html><head><title>gogui</title></head><body>%s</body></html>"
-
-		w.Write([]byte(
-			fmt.Sprintf(html, a.widgetTree.Render()),
-		))
-	})
-
 	println("Server is running on http://" + a.config.serverAddress())
+
+	http.HandleFunc("/", a.requestHandler)
 	return http.ListenAndServe(a.config.serverAddress(), nil)
+}
+
+func (a *App) GetWidget(id int) *widgets.Widget {
+	return a.widgetTree.GetWidget(id)
 }
