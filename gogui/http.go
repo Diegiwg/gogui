@@ -1,8 +1,10 @@
 package gogui
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+
+	"nhooyr.io/websocket"
 )
 
 type HttpCtx struct {
@@ -10,6 +12,7 @@ type HttpCtx struct {
 	Html     string
 	Request  *http.Request
 	Response *http.ResponseWriter
+	WsConn   *websocket.Conn
 }
 
 func rootHandler(ctx *HttpCtx) {
@@ -19,32 +22,10 @@ func rootHandler(ctx *HttpCtx) {
 	))
 }
 
-func buttonHandler(ctx *HttpCtx) {
-	if !ctx.Request.URL.Query().Has("actionId") {
-		return
-	}
-
-	actionId := ctx.Request.URL.Query().Get("actionId")
-
-	if actionId == "" {
-		return
-	}
-
-	action, exists := ctx.App.actions["button-"+actionId]
-	if !exists {
-		return
-	}
-
-	action(ctx)
-
-	rw := *ctx.Response
-	rw.Write([]byte("OK"))
-}
-
-func (a *App) requestHandler(w http.ResponseWriter, r *http.Request) {
+func (app *App) requestHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := &HttpCtx{
-		App:      a,
-		Html:     bundle(),
+		App:      app,
+		Html:     bundle(app),
 		Request:  r,
 		Response: &w,
 	}
@@ -53,15 +34,15 @@ func (a *App) requestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	println(fmt.Sprintf("URL: %s", r.URL.Path))
+	log.Printf("REQUEST: %s", r.URL.Path)
 
 	if r.URL.Path == "/" {
 		rootHandler(ctx)
 		return
 	}
 
-	if r.URL.Path == "/button" {
-		buttonHandler(ctx)
+	if r.URL.Path == "/ws" {
+		wsHandler(ctx)
 		return
 	}
 }

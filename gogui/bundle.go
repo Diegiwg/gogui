@@ -11,9 +11,10 @@ func bundleMeta() string {
 	return "<title>gogui</title>"
 }
 
-func bundleJs() string {
+func bundleJs(app *App) string {
 	data := "<script type=\"module\" defer>%s</script>"
 	content := gogui_js.ButtonHandler
+	content += fmt.Sprintf(gogui_js.WsClient, app.config.serverAddress())
 	return fmt.Sprintf(data, content)
 }
 
@@ -23,11 +24,11 @@ func bundleCss() string {
 	return fmt.Sprintf(data, content)
 }
 
-func bundle() string {
+func bundle(app *App) string {
 	html := "<html><head>"
 
 	html += bundleMeta()
-	html += bundleJs()
+	html += bundleJs(app)
 	html += bundleCss()
 
 	html += "</head><body>"

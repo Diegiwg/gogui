@@ -9,7 +9,7 @@ import (
 type App struct {
 	config     *AppConfig
 	widgetTree *widgets.WidgetTree
-	actions    map[string]func(ctx *HttpCtx)
+	actions    map[string]func(ctx *HttpCtx, data map[string]interface{})
 }
 
 func NewApp(config *AppConfig) (*App, error) {
@@ -25,7 +25,7 @@ func NewApp(config *AppConfig) (*App, error) {
 	return &App{
 		config:     config,
 		widgetTree: widgets.NewWidgetTree(),
-		actions:    make(map[string]func(ctx *HttpCtx)),
+		actions:    make(map[string]func(ctx *HttpCtx, data map[string]interface{})),
 	}, nil
 }
 

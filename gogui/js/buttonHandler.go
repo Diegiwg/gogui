@@ -2,6 +2,13 @@ package gogui_js
 
 const ButtonHandler = `
 window.buttonActionTrigger = (btn) => {
-  fetch("button?actionId=" + btn.id).finally(() => window.location.reload());
+  const data = {
+    id: btn.id
+  }
+
+  socket.send(JSON.stringify({
+    action: "button-click",
+    data: data,
+  }));
 };
 `

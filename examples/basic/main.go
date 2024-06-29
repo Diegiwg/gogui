@@ -7,8 +7,8 @@ import (
 	gogui_widgets "github.com/Diegiwg/gogui/gogui/widgets"
 )
 
-func clickHandler(counter *int, label *gogui_widgets.Widget) func(ctx *gogui.HttpCtx) {
-	return func(ctx *gogui.HttpCtx) {
+func clickHandler(counter *int, label *gogui_widgets.Widget) func(ctx *gogui.HttpCtx, data map[string]interface{}) {
+	return func(ctx *gogui.HttpCtx, data map[string]interface{}) {
 		*counter++
 		label.SetData("text", "Click Counter: "+strconv.Itoa(*counter))
 	}

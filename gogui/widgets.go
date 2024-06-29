@@ -20,7 +20,7 @@ func (app *App) Label(text string) (int, *W.Widget) {
 	return app.widgetTree.AddWidget(widget), widget
 }
 
-func (app *App) Button(text string, onClick func(ctx *HttpCtx)) (int, *W.Widget) {
+func (app *App) Button(text string, onClick func(ctx *HttpCtx, data map[string]interface{})) (int, *W.Widget) {
 	widget := W.NewWidget()
 	widget = widget.Button(text)
 
