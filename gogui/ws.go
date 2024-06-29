@@ -59,7 +59,7 @@ func buttonHandler(ctx *HttpCtx, data map[string]interface{}) {
 	}
 
 	action, exists := ctx.App.actions["button-"+actionId]
-	if !exists {
+	if !exists || action == nil {
 		return
 	}
 

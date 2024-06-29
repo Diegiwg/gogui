@@ -22,23 +22,32 @@ func main() {
 
 	app, err := gui.NewApp(config)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
-	app.Element("h1", "GoGui")
+	_, title := app.Element("h1", "GoGui")
+	title.Style.TextColor = "#2c43db"
+
 	app.Label("This is a project for learning purposes.")
+	_, primaryBtn := app.Button("Not click me!", nil)
+	primaryBtn.SetProp("disabled", true)
 
 	app.Element("hr", "")
 
 	counter := 0
 	_, clickLabel := app.Label("Click Counter: " + strconv.Itoa(counter))
-	app.Button("Click me!", clickHandler(&counter, clickLabel))
+	_, secondaryBtn := app.Button("Click me!", clickHandler(&counter, clickLabel))
+	secondaryBtn.SetProp("secondary", true)
+
+	app.Element("hr", "")
 
 	_, grid := app.Grid(3, 3)
 	for i := 1; i <= 9; i++ {
-		el := grid.Element("p", strconv.Itoa(i))
+		el := grid.Element("p", "Element "+strconv.Itoa(i))
 		grid.Child(el)
 	}
+
+	app.Element("hr", "")
 
 	log.Println("WARNING: This project is still in development.")
 	err = app.Run()

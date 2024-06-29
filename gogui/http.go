@@ -19,8 +19,10 @@ type HttpCtx struct {
 
 func rootHandler(ctx *HttpCtx) {
 	rw := *ctx.Response
+	html, css := ctx.App.widgetTree.Render()
+
 	rw.Write([]byte(
-		ctx.Html + ctx.App.widgetTree.Render() + "</body></html>", // fmt.Sprintf don't work here because css have '%' in it
+		ctx.Html + html + "</body><style>" + css + "</style></html>", // fmt.Sprintf don't work here because css have '%' in it
 	))
 }
 

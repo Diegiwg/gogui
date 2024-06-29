@@ -2,7 +2,6 @@ package gogui_widgets
 
 import (
 	"fmt"
-	"strconv"
 )
 
 type WidgetTree struct {
@@ -24,20 +23,22 @@ func (tree *WidgetTree) GetWidget(id int) *Widget {
 	return tree.Widgets[id]
 }
 
-func (tree *WidgetTree) Render() string {
+func (tree *WidgetTree) Render() (string, string) {
 	var html string = ""
+	var css string = ""
 
 	counter := len(tree.Widgets)
 	if counter == 0 {
-		return html
+		return html, css
 	}
 
 	for i := 1; i <= counter; i++ {
 		w := *tree.Widgets[i]
-		html += fmt.Sprint(w.Html(strconv.Itoa(i)))
-		html += "\n"
+		id := fmt.Sprintf("ID%d", i)
+		html += w.Html(id) + "\n"
+		css += w.Style.String(id) + "\n"
 	}
 
 	html = html[:len(html)-1]
-	return html
+	return html, css
 }

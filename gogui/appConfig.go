@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// AppConfig is used to configure the application
 type AppConfig struct {
 	ServerAddr *string // default: 127.0.0.1
 	ServerPort *int    // default: 8080
