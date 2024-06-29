@@ -1,25 +1,26 @@
 package main
 
 import (
+	"log"
 	"strconv"
 
-	"github.com/Diegiwg/gogui/gogui"
-	gogui_widgets "github.com/Diegiwg/gogui/gogui/widgets"
+	gui "github.com/Diegiwg/gogui/gogui"
+	gui_widgets "github.com/Diegiwg/gogui/gogui/widgets"
 )
 
-func clickHandler(counter *int, label *gogui_widgets.Widget) func(ctx *gogui.HttpCtx, data map[string]interface{}) {
-	return func(ctx *gogui.HttpCtx, data map[string]interface{}) {
+func clickHandler(counter *int, label *gui_widgets.Widget) gui.HttpHandler {
+	return func(ctx *gui.HttpCtx, data map[string]interface{}) {
 		*counter++
 		label.SetData("text", "Click Counter: "+strconv.Itoa(*counter))
 	}
 }
 
 func main() {
-	config := gogui.NewConfig()
+	config := gui.NewConfig()
 	*config.ServerAddr = "127.0.0.1"
 	*config.ServerPort = 6969
 
-	app, err := gogui.NewApp(config)
+	app, err := gui.NewApp(config)
 	if err != nil {
 		panic(err)
 	}
@@ -39,9 +40,9 @@ func main() {
 		grid.Child(el)
 	}
 
-	println("WARNING: This project is still in development.")
+	log.Println("WARNING: This project is still in development.")
 	err = app.Run()
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 }

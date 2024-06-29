@@ -7,6 +7,8 @@ import (
 	"nhooyr.io/websocket"
 )
 
+type HttpHandler func(ctx *HttpCtx, data map[string]interface{})
+
 type HttpCtx struct {
 	App      *App
 	Html     string

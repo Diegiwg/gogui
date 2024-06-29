@@ -1,6 +1,7 @@
 package gogui
 
 import (
+	"log"
 	"net/http"
 
 	widgets "github.com/Diegiwg/gogui/gogui/widgets"
@@ -9,7 +10,7 @@ import (
 type App struct {
 	config     *AppConfig
 	widgetTree *widgets.WidgetTree
-	actions    map[string]func(ctx *HttpCtx, data map[string]interface{})
+	actions    map[string]HttpHandler
 }
 
 func NewApp(config *AppConfig) (*App, error) {
@@ -25,12 +26,12 @@ func NewApp(config *AppConfig) (*App, error) {
 	return &App{
 		config:     config,
 		widgetTree: widgets.NewWidgetTree(),
-		actions:    make(map[string]func(ctx *HttpCtx, data map[string]interface{})),
+		actions:    make(map[string]HttpHandler),
 	}, nil
 }
 
 func (a *App) Run() error {
-	println("Server is running on http://" + a.config.serverAddress())
+	log.Println("INFO: Server is running on http://" + a.config.serverAddress())
 
 	http.HandleFunc("/", a.requestHandler)
 	return http.ListenAndServe(a.config.serverAddress(), nil)
