@@ -1,7 +1,7 @@
 function updateElementContent(targetId, html) {
     const target = document.getElementById(targetId);
     if (!target) {
-        console.log(`target with id ${targetId} not found`);
+        console.log("target with id "+ targetId + " not found");
         return;
     }
 
@@ -11,7 +11,6 @@ function updateElementContent(targetId, html) {
         return;
     }
 
-    console.info("function::updateElementContent -> content in target updated");
     target.replaceChildren(frag);
 }
 window.updateElementContent = updateElementContent;

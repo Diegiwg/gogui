@@ -4,7 +4,7 @@ const UpdateElementContent = `
 function updateElementContent(targetId, html) {
     const target = document.getElementById(targetId);
     if (!target) {
-        console.log("target with id " + targetId + " not found");
+        console.log("target with id "+ targetId + " not found");
         return;
     }
 
