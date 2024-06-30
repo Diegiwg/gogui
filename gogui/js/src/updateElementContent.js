@@ -11,6 +11,8 @@ function updateElementContent(targetId, html) {
         return;
     }
 
-    target.replaceChildren(frag);
+    // target.replaceChildren(frag);
+
+    target.parentElement.replaceChild(frag, target);
 }
 window.updateElementContent = updateElementContent;
