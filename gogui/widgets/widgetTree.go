@@ -37,6 +37,8 @@ func (tree *WidgetTree) Render() (string, string) {
 		id := fmt.Sprintf("ID%d", i)
 		html += w.Html(id) + "\n"
 		css += w.Style.String(id) + "\n"
+
+		tree.Widgets[i].Id = id
 	}
 
 	html = html[:len(html)-1]

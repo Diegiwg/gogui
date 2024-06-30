@@ -12,6 +12,7 @@ func clickHandler(counter *int, label *gui_widgets.Widget) gui.HttpHandler {
 	return func(ctx *gui.HttpCtx, data map[string]interface{}) {
 		*counter++
 		label.SetData("text", "Click Counter: "+strconv.Itoa(*counter))
+		label.EmitContentUpdate(ctx.WsClient.WsConn, ctx.WsClient.Ctx)
 	}
 }
 
@@ -38,14 +39,6 @@ func main() {
 	_, clickLabel := app.Label("Click Counter: " + strconv.Itoa(counter))
 	_, secondaryBtn := app.Button("Click me!", clickHandler(&counter, clickLabel))
 	secondaryBtn.SetProp("secondary", true)
-
-	app.Element("hr", "")
-
-	_, grid := app.Grid(3, 3)
-	for i := 1; i <= 9; i++ {
-		el := grid.Element("p", "Element "+strconv.Itoa(i))
-		grid.Child(el)
-	}
 
 	app.Element("hr", "")
 

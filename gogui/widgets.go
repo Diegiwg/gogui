@@ -10,14 +10,16 @@ func (app *App) Element(tag string, content string) (int, *W.Widget) {
 	widget := W.NewWidget()
 	widget = widget.Element(tag, content)
 
-	return app.widgetTree.AddWidget(widget), widget
+	widgetId := app.widgetTree.AddWidget(widget)
+	return widgetId, widget
 }
 
 func (app *App) Label(text string) (int, *W.Widget) {
 	widget := W.NewWidget()
 	widget = widget.Label(text)
 
-	return app.widgetTree.AddWidget(widget), widget
+	widgetId := app.widgetTree.AddWidget(widget)
+	return widgetId, widget
 }
 
 // Button
@@ -36,6 +38,7 @@ func (app *App) Button(text string, onClick func(ctx *HttpCtx, data map[string]i
 	widget = widget.Button(text)
 
 	widgetId := app.widgetTree.AddWidget(widget)
+
 	id := fmt.Sprintf("button-ID%d", widgetId)
 	app.actions[id] = onClick
 

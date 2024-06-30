@@ -1,7 +1,7 @@
 package gogui_js
 
-const ButtonHandler = `
-window.buttonActionTrigger = (btn) => {
+const ButtonActionTrigger = `
+function buttonActionTrigger(btn) {
   const data = {
     id: btn.id
   }
@@ -11,4 +11,5 @@ window.buttonActionTrigger = (btn) => {
     data: data,
   }));
 };
+window.buttonActionTrigger = buttonActionTrigger;
 `

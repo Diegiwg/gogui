@@ -1,10 +1,21 @@
 package gogui_widgets
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+
+	"nhooyr.io/websocket"
+)
+
+type WsClient struct {
+	WsConn *websocket.Conn
+	Ctx    *context.Context
+}
 
 type HashMap map[string]interface{}
 
 type Widget struct {
+	Id    string
 	Kind  string
 	Html  func(id string) string
 	Data  HashMap
@@ -49,4 +60,12 @@ func (widget *Widget) Child(newWidget *Widget) error {
 	default:
 		return fmt.Errorf("can't add child to widget of kind %s", widget.Kind)
 	}
+}
+
+func (widget *Widget) EmitContentUpdate(wsConn *websocket.Conn, ctx *context.Context) {
+	if wsConn == nil || ctx == nil {
+		return
+	}
+
+	wsConn.Write(*ctx, websocket.MessageText, []byte("update-element-content:"+widget.Id+"|"+widget.Html(widget.Id)))
 }

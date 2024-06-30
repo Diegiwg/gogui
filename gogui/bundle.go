@@ -13,8 +13,8 @@ func bundleMeta() string {
 
 func bundleJs(app *App) string {
 	data := "<script type=\"module\" defer>%s</script>"
-	content := gogui_js.ButtonHandler
-	content += gogui_js.HtmxV1_9_12
+	content := gogui_js.ButtonActionTrigger
+	content += gogui_js.UpdateElementContent
 	content += fmt.Sprintf(gogui_js.WsClient, app.config.serverAddress())
 	return fmt.Sprintf(data, content)
 }

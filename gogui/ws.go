@@ -13,6 +13,21 @@ type Payload struct {
 	Data   map[string]interface{} `json:"data"`
 }
 
+type WsClient struct {
+	WsConn *websocket.Conn
+	Ctx    *context.Context
+}
+
+func (c *WsClient) Send(data map[string]interface{}) {
+	msg, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	c.WsConn.Write(*c.Ctx, websocket.MessageText, msg)
+}
+
 func wsHandler(httpCtx *HttpCtx) {
 	w := *httpCtx.Response
 	r := httpCtx.Request
@@ -24,10 +39,11 @@ func wsHandler(httpCtx *HttpCtx) {
 	}
 	defer conn.CloseNow()
 
-	httpCtx.WsConn = conn
+	httpCtx.WsClient = &WsClient{WsConn: conn}
 
 	for {
 		ctx := context.Background()
+		httpCtx.WsClient.Ctx = &ctx
 
 		_, msg, err := conn.Read(ctx)
 		if err != nil {

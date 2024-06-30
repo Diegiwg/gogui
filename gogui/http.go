@@ -3,8 +3,6 @@ package gogui
 import (
 	"log"
 	"net/http"
-
-	"nhooyr.io/websocket"
 )
 
 type HttpHandler func(ctx *HttpCtx, data map[string]interface{})
@@ -14,7 +12,7 @@ type HttpCtx struct {
 	Html     string
 	Request  *http.Request
 	Response *http.ResponseWriter
-	WsConn   *websocket.Conn
+	WsClient *WsClient
 }
 
 func rootHandler(ctx *HttpCtx) {
