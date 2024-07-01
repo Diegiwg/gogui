@@ -9,8 +9,12 @@ import (
 	"nhooyr.io/websocket"
 )
 
-var wsConn *websocket.Conn
-var wsCtx *context.Context
+type wsClient struct {
+	wsConn *websocket.Conn
+	wsCtx  *context.Context
+}
+
+var clients = map[string]*wsClient{}
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Accept(w, r, nil)
@@ -28,8 +32,17 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		wsConn = conn
-		wsCtx = &ctx
+		var clientId string
+		for {
+			clientId = generateRandomId(25)
+
+			if _, ok := clients[clientId]; !ok {
+				break
+			}
+		}
+
+		// TODO: remove dead clients
+		clients[clientId] = &wsClient{wsConn: conn, wsCtx: &ctx}
 
 		var payload EventPayload
 		err = json.Unmarshal(msg, &payload)
@@ -64,9 +77,17 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (widget *Widget) emitContentUpdate() {
-	if wsConn == nil || wsCtx == nil {
+	if len(clients) == 0 {
+		println("no clients")
 		return
 	}
 
-	wsConn.Write(*wsCtx, websocket.MessageText, []byte("update-element-content:"+widget.id+"|"+widget.Html()))
+	for _, client := range clients {
+		if client.wsConn == nil || client.wsCtx == nil {
+			continue
+		}
+
+		client.wsConn.Write(*client.wsCtx, websocket.MessageText, []byte("update-element-content:"+widget.id+"|"+widget.Html()))
+	}
+
 }
