@@ -19,6 +19,9 @@ type Widget struct {
 	data     WidgetData
 	children WidgetTree
 	events   WidgetEvents
+
+	index  int
+	parent *Widget
 }
 
 func newWidget() *Widget {
@@ -27,6 +30,13 @@ func newWidget() *Widget {
 		children: make(WidgetTree),
 		events:   make(WidgetEvents),
 	}
+}
+
+func (w *Widget) Delete() {
+	parent := w.parent
+	dom.RemoveWidget(w.id)
+	w.parent.RemoveChild(w.index)
+	parent.emitContentUpdate()
 }
 
 func (w *Widget) Dump(identLevel int) {
@@ -56,20 +66,37 @@ func (w *Widget) AddChild(children ...*Widget) error {
 	for i := 0; i < count; i++ {
 		index := len(w.children) + 1
 		w.children[index] = children[i]
+
+		children[i].parent = w
+		children[i].index = index
 	}
 
 	dom.Register(w)
 	return nil
 }
 
-func (w *Widget) GetChild(id int) *Widget {
-	return nil
+func (w *Widget) GetChild(index int) *Widget {
+	if index < 1 || index > len(w.children) {
+		return nil
+	}
+
+	return w.children[index]
+}
+
+func (w *Widget) RemoveChild(index int) {
+	if index < 1 || index > len(w.children) {
+		return
+	}
+	w.children[index] = nil
 }
 
 func (w *Widget) Html() string {
 	childHtml := ""
 	childCount := len(w.children)
 	for i := 1; i <= childCount; i++ {
+		if w.children[i] == nil {
+			continue
+		}
 		childHtml += w.children[i].Html()
 	}
 

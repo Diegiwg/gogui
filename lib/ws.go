@@ -55,7 +55,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		(*event)(&payload)
+		(*event)(widget, &payload)
 
 		err = conn.Write(ctx, websocket.MessageText, make([]byte, 0))
 		if err != nil {

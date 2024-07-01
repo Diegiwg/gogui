@@ -8,9 +8,15 @@ import (
 )
 
 func counterClickHandler(counter *int, label *gui.Widget) gui.EventHandler {
-	return func(event *gui.EventPayload) {
+	return func(widget *gui.Widget, event *gui.EventPayload) {
 		*counter++
 		label.SetData("content", "Click Counter: "+strconv.Itoa(*counter))
+	}
+}
+
+func gridCellDeleteHandler() gui.EventHandler {
+	return func(widget *gui.Widget, event *gui.EventPayload) {
+		widget.Delete()
 	}
 }
 
@@ -41,8 +47,9 @@ func main() {
 
 	grid := gui.NewGrid(3, 3)
 	for i := 0; i < 9; i++ {
-		grid.AddChild(gui.NewLabel("Cell " + strconv.Itoa(i)))
+		grid.AddChild(gui.NewButton("Cell "+strconv.Itoa(i), gridCellDeleteHandler()))
 	}
+	grid.AddChild(gui.NewLabel("Click the cells to delete them!"))
 
 	app.Root.AddChild(
 		main,

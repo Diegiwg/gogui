@@ -6,8 +6,7 @@ import (
 )
 
 type App struct {
-	Root *Widget
-
+	Root   *Widget
 	config *Config
 }
 
@@ -22,8 +21,7 @@ func NewApp(config *Config) (*App, error) {
 	}
 
 	return &App{
-		Root: NewElement("div", ""),
-
+		Root:   NewElement("div", ""),
 		config: config,
 	}, err
 }

@@ -6,4 +6,4 @@ type EventPayload struct {
 	Data   map[string]interface{} `json:"data"`
 }
 
-type EventHandler func(payload *EventPayload)
+type EventHandler func(widget *Widget, payload *EventPayload)
