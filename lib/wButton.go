@@ -1,4 +1,3 @@
-// TODO: refactor this code
 package lib
 
 func NewButton(text string, onClick EventHandler) *Widget {
@@ -15,5 +14,6 @@ func NewButton(text string, onClick EventHandler) *Widget {
 }
 
 func (w *Widget) buttonRender() string {
+	// TODO: implement dynamic event register instead of hardcoded onclick
 	return w.renderOpenTag() + "onclick=\"buttonActionTrigger(this)\" >" + w.GetData("text").(string) + "%s" + w.renderCloseTag()
 }

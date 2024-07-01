@@ -1,4 +1,3 @@
-// TODO: refactor this code
 package lib
 
 import (
