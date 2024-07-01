@@ -63,3 +63,11 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func (widget *Widget) emitContentUpdate() {
+	if wsConn == nil || wsCtx == nil {
+		return
+	}
+
+	wsConn.Write(*wsCtx, websocket.MessageText, []byte("update-element-content:"+widget.id+"|"+widget.Html()))
+}

@@ -3,8 +3,6 @@ package lib
 import (
 	"fmt"
 	"strings"
-
-	"nhooyr.io/websocket"
 )
 
 type WidgetTree map[int]*Widget
@@ -101,31 +99,4 @@ func (w *Widget) Html() string {
 	}
 
 	return fmt.Sprintf(w.render(), childHtml)
-}
-
-func (w *Widget) SetEvent(key string, handler EventHandler) {
-	w.events[key] = handler
-}
-
-func (w *Widget) GetEvent(key string) *EventHandler {
-	event, ok := w.events[key]
-
-	if !ok {
-		return nil
-	}
-
-	return &event
-}
-
-func (w *Widget) HasEvent(key string) bool {
-	_, ok := w.events[key]
-	return ok
-}
-
-func (widget *Widget) emitContentUpdate() {
-	if wsConn == nil || wsCtx == nil {
-		return
-	}
-
-	wsConn.Write(*wsCtx, websocket.MessageText, []byte("update-element-content:"+widget.id+"|"+widget.Html()))
 }
