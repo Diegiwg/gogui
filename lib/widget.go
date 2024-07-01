@@ -7,24 +7,6 @@ import (
 	"nhooyr.io/websocket"
 )
 
-type WidgetKind int
-
-const (
-	WidgetElement = iota
-	WidgetLabel
-	WidgetButton
-)
-
-func (wk *WidgetKind) String(w *Widget) string {
-	switch *wk {
-	case WidgetElement:
-		return fmt.Sprintf("WidgetElement(%s)", w.GetData("tag").(string))
-	case WidgetLabel:
-		return "WidgetLabel"
-	}
-	return "WidgetKind"
-}
-
 type WidgetTree map[int]*Widget
 type WidgetData map[string]interface{}
 type WidgetRender func() string

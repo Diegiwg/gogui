@@ -11,7 +11,6 @@ func counterClickHandler(counter *int, label *gui.Widget) gui.EventHandler {
 	return func(event *gui.EventPayload) {
 		*counter++
 		label.SetData("content", "Click Counter: "+strconv.Itoa(*counter))
-		// TODO: SetData will trigger a content update
 	}
 }
 
@@ -40,10 +39,17 @@ func main() {
 		gui.NewButton("Click me!", counterClickHandler(&counter, counterLabel)),
 	)
 
+	grid := gui.NewGrid(3, 3)
+	for i := 0; i < 9; i++ {
+		grid.AddChild(gui.NewLabel("Cell " + strconv.Itoa(i)))
+	}
+
 	app.Root.AddChild(
 		main,
 		gui.NewElement("hr", ""),
 		interactive,
+		gui.NewElement("hr", ""),
+		grid,
 		gui.NewElement("hr", ""),
 	)
 
