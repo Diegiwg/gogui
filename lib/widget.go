@@ -6,7 +6,6 @@ import (
 )
 
 type WidgetTree map[int]*Widget
-type WidgetData map[string]interface{}
 type WidgetRender func() string
 type WidgetEvents map[string]EventHandler
 
@@ -17,6 +16,7 @@ type Widget struct {
 	data     WidgetData
 	children WidgetTree
 	events   WidgetEvents
+	style    WidgetStyle
 
 	index  int
 	parent *Widget
@@ -27,6 +27,7 @@ func newWidget() *Widget {
 		data:     make(WidgetData),
 		children: make(WidgetTree),
 		events:   make(WidgetEvents),
+		style:    NewWidgetStyle(),
 	}
 }
 
@@ -44,15 +45,6 @@ func (w *Widget) Dump(identLevel int) {
 	for i := 1; i <= childCount; i++ {
 		w.children[i].Dump(identLevel + 1)
 	}
-}
-
-func (w *Widget) SetData(key string, value interface{}) {
-	w.data[key] = value
-	w.emitContentUpdate()
-}
-
-func (w *Widget) GetData(key string) interface{} {
-	return w.data[key]
 }
 
 func (w *Widget) AddChild(children ...*Widget) error {

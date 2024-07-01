@@ -14,6 +14,7 @@ func NewButton(text string, onClick EventHandler) *Widget {
 }
 
 func (w *Widget) buttonRender() string {
+	style := w.style.String()
 	// TODO: implement dynamic event register instead of hardcoded onclick
-	return w.renderOpenTag() + "onclick=\"buttonActionTrigger(this)\" >" + w.GetData("text").(string) + "%s" + w.renderCloseTag()
+	return w.renderOpenTag() + "onclick=\"buttonActionTrigger(this)\" style=\"" + style + "\" >" + w.GetData("text").(string) + "%s" + w.renderCloseTag()
 }

@@ -12,5 +12,6 @@ func NewLabel(content string) *Widget {
 }
 
 func (w *Widget) labelRender() string {
-	return w.renderOpenTag() + ">" + w.GetData("content").(string) + "%s" + w.renderCloseTag()
+	style := w.style.String()
+	return w.renderOpenTag() + " style=\"" + style + "\" >" + w.GetData("content").(string) + "%s" + w.renderCloseTag()
 }

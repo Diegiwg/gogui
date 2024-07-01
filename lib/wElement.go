@@ -12,5 +12,6 @@ func NewElement(tag string, content string) *Widget {
 }
 
 func (w *Widget) elementRender() string {
-	return w.renderOpenTag() + ">" + w.GetData("content").(string) + "%s</" + w.GetData("tag").(string) + ">"
+	style := w.style.String()
+	return w.renderOpenTag() + " style=\"" + style + "\" >" + w.GetData("content").(string) + "%s</" + w.GetData("tag").(string) + ">"
 }
