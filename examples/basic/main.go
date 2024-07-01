@@ -4,15 +4,14 @@ import (
 	"log"
 	"strconv"
 
-	gui "github.com/Diegiwg/gogui/gogui"
-	gui_widgets "github.com/Diegiwg/gogui/gogui/widgets"
+	gui "github.com/Diegiwg/gogui/lib"
 )
 
-func clickHandler(counter *int, label *gui_widgets.Widget) gui.HttpHandler {
-	return func(ctx *gui.HttpCtx, data map[string]interface{}) {
+func counterClickHandler(counter *int, label *gui.Widget) gui.EventHandler {
+	return func(event *gui.EventPayload) {
 		*counter++
-		label.SetData("text", "Click Counter: "+strconv.Itoa(*counter))
-		label.EmitContentUpdate(ctx.WsClient.WsConn, ctx.WsClient.Ctx)
+		label.SetData("content", "Click Counter: "+strconv.Itoa(*counter))
+		// TODO: SetData will trigger a content update
 	}
 }
 
@@ -26,23 +25,28 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	_, title := app.Element("h1", "GoGui")
-	title.Style.TextColor = "#2c43db"
+	main := gui.NewElement("div", "")
+	main.AddChild(
+		gui.NewElement("h1", "GoGui Lib Example"),
+		gui.NewLabel("This is a project for learning purposes."),
+	)
 
-	app.Label("This is a project for learning purposes.")
-	_, primaryBtn := app.Button("Not click me!", nil)
-	primaryBtn.SetProp("disabled", true)
-
-	app.Element("hr", "")
+	interactive := gui.NewElement("div", "")
 
 	counter := 0
-	_, clickLabel := app.Label("Click Counter: " + strconv.Itoa(counter))
-	_, secondaryBtn := app.Button("Click me!", clickHandler(&counter, clickLabel))
-	secondaryBtn.SetProp("secondary", true)
+	counterLabel := gui.NewLabel("Click Counter: " + strconv.Itoa(counter))
+	interactive.AddChild(
+		counterLabel,
+		gui.NewButton("Click me!", counterClickHandler(&counter, counterLabel)),
+	)
 
-	app.Element("hr", "")
+	app.Root.AddChild(
+		main,
+		gui.NewElement("hr", ""),
+		interactive,
+		gui.NewElement("hr", ""),
+	)
 
-	log.Println("WARNING: This project is still in development.")
 	err = app.Run()
 	if err != nil {
 		log.Fatalln(err)

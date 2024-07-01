@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 # Compile Javascript
-cd gogui/js/src
+cd lib/js/src
 go run .
 cd ../../../
 
