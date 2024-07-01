@@ -78,7 +78,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 func (widget *Widget) emitContentUpdate() {
 	if len(clients) == 0 {
-		println("no clients")
 		return
 	}
 

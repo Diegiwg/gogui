@@ -15,7 +15,7 @@ func (w *Widget) SetEvent(key string, handler EventHandler) {
 func (w *Widget) GetEvent(key string) *EventHandler {
 	event, ok := w.events[key]
 
-	if !ok {
+	if event == nil || !ok {
 		return nil
 	}
 
