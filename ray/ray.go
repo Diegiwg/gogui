@@ -1,4 +1,4 @@
-package main
+package gogui_raylib
 
 /*
 #cgo CFLAGS:  -I/data/hdd1/gogui/ray/raylib-5.0_linux_amd64/include
@@ -13,7 +13,7 @@ import (
 	"unsafe"
 )
 
-func main() {
+func Init() {
 	title := C.CString("raylib backend")
 	defer C.free(unsafe.Pointer(title))
 
