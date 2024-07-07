@@ -2,24 +2,24 @@ package lib
 
 import (
 	"fmt"
-	"strings"
 )
 
 var widgetPool = make(map[string]*Widget, 0)
 
-type WidgetTree map[int]*Widget
+type WidgetTree map[string]*Widget
+type WidgetTreeIds map[int]string
 type WidgetRender func(obj *RenderHtmlPayload)
 
 type Widget struct {
-	id       string
-	kind     WidgetKind
-	render   WidgetRender
-	data     WidgetData
-	children WidgetTree
-	events   []WidgetEvent
-	style    WidgetStyle
+	id          string
+	kind        WidgetKind
+	render      WidgetRender
+	data        WidgetData
+	children    WidgetTree
+	childrenIds WidgetTreeIds
+	events      []WidgetEvent
+	style       WidgetStyle
 
-	index  int
 	parent *Widget
 }
 
@@ -30,11 +30,12 @@ func (w *Widget) GetId() string {
 func newWidget() *Widget {
 	id := generateId(10)
 	w := &Widget{
-		id:       id,
-		data:     make(WidgetData),
-		children: make(WidgetTree),
-		events:   make([]WidgetEvent, 0),
-		style:    NewWidgetStyle(),
+		id:          id,
+		data:        make(WidgetData),
+		children:    make(WidgetTree),
+		childrenIds: make(WidgetTreeIds),
+		events:      make([]WidgetEvent, 0),
+		style:       NewWidgetStyle(),
 	}
 
 	widgetPool[id] = w
@@ -42,16 +43,7 @@ func newWidget() *Widget {
 }
 
 func (w *Widget) Delete() {
-	w.parent.RemoveChild(w.index)
-}
-
-func (w *Widget) Dump(identLevel int) {
-	println(fmt.Sprintf("%s%s", strings.Repeat(" ", identLevel), w.kind.String(w)))
-
-	childCount := len(w.children)
-	for i := 1; i <= childCount; i++ {
-		w.children[i].Dump(identLevel + 1)
-	}
+	w.parent.RemoveChild(w.id)
 }
 
 func (w *Widget) AddChild(children ...*Widget) error {
@@ -61,33 +53,27 @@ func (w *Widget) AddChild(children ...*Widget) error {
 
 	count := len(children)
 	for i := 0; i < count; i++ {
-		index := len(w.children) + 1
-		w.children[index] = children[i]
+		child := children[i]
 
-		children[i].parent = w
-		children[i].index = index
+		w.children[child.id] = child
+		w.childrenIds[len(w.childrenIds)+1] = child.id
+		child.parent = w
 	}
 
-	// dom.Register(w)
 	return nil
 }
 
-func (w *Widget) GetChild(index int) *Widget {
-	if index < 1 || index > len(w.children) {
-		return nil
-	}
-
-	return w.children[index]
+func (w *Widget) GetChild(id string) *Widget {
+	return w.children[id]
 }
 
-func (w *Widget) RemoveChild(index int) {
-	if index < 1 || index > len(w.children) {
+func (w *Widget) RemoveChild(id string) {
+	child := w.children[id]
+	if child == nil {
 		return
 	}
 
-	child := w.children[index]
-
-	delete(w.children, index)
+	delete(w.children, id)
 	emitEvent("delete-widget", child.id)
 }
 
@@ -111,11 +97,18 @@ func (w *Widget) Render() *RenderHtmlPayload {
 	}
 
 	obj.Children = make([]*RenderHtmlPayload, 0, len(w.children))
-	for i := 0; i <= len(w.children); i++ {
-		child := w.children[i]
+	for i := 0; i <= len(w.childrenIds); i++ {
+
+		childId := w.childrenIds[i]
+		if childId == "" {
+			continue
+		}
+
+		child := w.children[childId]
 		if child == nil {
 			continue
 		}
+
 		obj.Children = append(obj.Children, child.Render())
 	}
 

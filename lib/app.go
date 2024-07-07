@@ -26,10 +26,6 @@ func NewApp(config *Config) (*App, error) {
 	}, err
 }
 
-func (a *App) Dump() {
-	a.Root.Dump(0)
-}
-
 func (a *App) Run() error {
 	registerEvent("html-content", func(widget *Widget, event *Event) {
 		emitRenderHtmlEvent(a.Root)
