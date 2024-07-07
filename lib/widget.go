@@ -84,7 +84,11 @@ func (w *Widget) RemoveChild(index int) {
 	if index < 1 || index > len(w.children) {
 		return
 	}
-	w.children[index] = nil
+
+	child := w.children[index]
+
+	delete(w.children, index)
+	emitEvent("delete-widget", child.id)
 }
 
 func (w *Widget) Render() *RenderHtmlPayload {

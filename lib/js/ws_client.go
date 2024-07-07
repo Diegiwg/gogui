@@ -25,6 +25,11 @@ socket.onmessage =
             case "render-html":
                 window.renderHtml(app, event.data, true);
                 break;
+
+            case "delete-widget":
+                window.deleteWidget(event.data);
+                break;
+
             case "update":
                 window.updateElementContent(event.data);
                 break;

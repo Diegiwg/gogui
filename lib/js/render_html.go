@@ -24,7 +24,6 @@ const RenderHtml = `
  * @property {Widget} parent
  */
 
-
 // /**
 //  * @type {Widget[]}
 //  */
@@ -36,19 +35,7 @@ const RenderHtml = `
  * @param {Widget} widget
  */
 function renderHtml(root, widget, replace = false, parent = null) {
-    // TODO: move this for proper check function
-
-    // Check if widget already exists
-    const existing = document.getElementById(widget.id);
-    if (existing) {
-        // Check if widget is the same
-        if (existing.innerHTML === widget.content) {
-            return;
-        }
-
-        existing.innerHTML = widget.content;
-        return;
-    }
+    if (!isNewRender(root, widget)) return;
 
     const el = document.createElement(widget.tag);
     el.id = widget.id;
@@ -82,10 +69,7 @@ function renderHtml(root, widget, replace = false, parent = null) {
         });
     }
 
-    for (const child of widget.children) {
-        console.log(child);
-        renderHtml(el, child);
-    }
+    renderChildren(el, widget);
 
     if (replace) {
         root.replaceChildren(el);
@@ -94,4 +78,23 @@ function renderHtml(root, widget, replace = false, parent = null) {
     }
 }
 window.renderHtml = renderHtml;
+
+function isNewRender(root, widget) {
+    const existing = document.getElementById(widget.id);
+    if (!existing) return true;
+
+    if (existing.innerHTML !== widget.content) {
+        existing.innerHTML = widget.content;
+    }
+
+    return false;
+}
+window.isNewRender = isNewRender;
+
+function renderChildren(root, widget) {
+    for (const child of widget.children) {
+        renderHtml(root, child);
+    }
+}
+window.renderChildren = renderChildren;
 `

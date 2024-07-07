@@ -34,10 +34,8 @@ func main() {
 
 	grid := gui.NewGrid(3, 3)
 	for i := 0; i < 9; i++ {
-		btn := gui.NewButton("Cell "+strconv.Itoa(i), nil)
-
-		btn.SetEvent("click", func(widget *gui.Widget, event *gui.Event) {
-			widget.UpdateData("content", "Deleted")
+		btn := gui.NewButton("Cell "+strconv.Itoa(i), func(widget *gui.Widget, event *gui.Event) {
+			widget.Delete()
 		})
 
 		grid.AddChild(btn)

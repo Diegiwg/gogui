@@ -18,6 +18,7 @@ func bundleJs(app *App) string {
 	content += lib_js.Base
 	content += lib_js.Utils
 	content += lib_js.RenderHtml
+	content += lib_js.DeleteWidget
 	content += lib_js.UpdateElementContent
 	content += fmt.Sprintf(lib_js.WsClient, app.config.serverAddress())
 
