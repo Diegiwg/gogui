@@ -13,9 +13,15 @@ func bundleMeta() string {
 
 func bundleJs(app *App) string {
 	data := "<script type=\"module\" defer>%s</script>"
-	content := lib_js.ButtonActionTrigger
+
+	var content string
+	content += lib_js.Base
+	content += lib_js.Utils
+	content += lib_js.RenderHtml
+	content += lib_js.DeleteWidget
 	content += lib_js.UpdateElementContent
 	content += fmt.Sprintf(lib_js.WsClient, app.config.serverAddress())
+
 	return fmt.Sprintf(data, content)
 }
 

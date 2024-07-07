@@ -7,19 +7,6 @@ import (
 	gui "github.com/Diegiwg/gogui/lib"
 )
 
-func counterClickHandler(counter *int, label *gui.Widget) gui.EventHandler {
-	return func(widget *gui.Widget, event *gui.EventPayload) {
-		*counter++
-		label.SetData("content", "Click Counter: "+strconv.Itoa(*counter))
-	}
-}
-
-func gridCellDeleteHandler() gui.EventHandler {
-	return func(widget *gui.Widget, event *gui.EventPayload) {
-		widget.Delete()
-	}
-}
-
 func main() {
 	config := gui.NewConfig()
 	*config.ServerAddr = "127.0.0.1"
@@ -40,14 +27,18 @@ func main() {
 
 	counter := 0
 	counterLabel := gui.NewLabel("Click Counter: " + strconv.Itoa(counter))
-	interactive.AddChild(
-		counterLabel,
-		gui.NewButton("Click me!", counterClickHandler(&counter, counterLabel)),
-	)
+	interactive.AddChild(counterLabel, gui.NewButton("Click me!", func(widget *gui.Widget, event *gui.Event) {
+		counter++
+		counterLabel.UpdateData("content", "Click Counter: "+strconv.Itoa(counter))
+	}))
 
 	grid := gui.NewGrid(3, 3)
 	for i := 0; i < 9; i++ {
-		grid.AddChild(gui.NewButton("Cell "+strconv.Itoa(i), gridCellDeleteHandler()))
+		btn := gui.NewButton("Cell "+strconv.Itoa(i), func(widget *gui.Widget, event *gui.Event) {
+			widget.Delete()
+		})
+
+		grid.AddChild(btn)
 	}
 	grid.AddChild(gui.NewLabel("Click the cells to delete them!"))
 

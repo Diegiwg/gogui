@@ -9,6 +9,8 @@ import (
 )
 
 func main() {
+	log.Println("INFO: Start")
+	clearDir()
 
 	dir, err := os.ReadDir(".")
 	if err != nil {
@@ -52,5 +54,33 @@ func compile(fileName string, content []byte) {
 
 func functionName(name string) (string, string) {
 	name = strings.TrimSuffix(name, ".js")
-	return strings.ToUpper(name[0:1]) + name[1:], name
+
+	parts := strings.Split(name, "_")
+	for i := range parts {
+		str := parts[i]
+		parts[i] = strings.ToUpper(str[0:1]) + str[1:]
+	}
+
+	return strings.Join(parts, ""), name
+}
+
+func clearDir() {
+	dir, err := os.ReadDir("../")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	for _, entry := range dir {
+		if entry.IsDir() {
+			continue
+		}
+
+		if !strings.HasSuffix(entry.Name(), ".go") {
+			continue
+		}
+
+		if err := os.Remove(filepath.Join("../", entry.Name())); err != nil {
+			log.Fatalln(err)
+		}
+	}
 }
