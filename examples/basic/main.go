@@ -40,7 +40,6 @@ func main() {
 
 		grid.AddChild(btn)
 	}
-	grid.AddChild(gui.NewLabel("Click the cells to delete them!"))
 
 	app.Root.AddChild(
 		main,
@@ -48,6 +47,7 @@ func main() {
 		interactive,
 		gui.NewElement("hr", ""),
 		grid,
+        gui.NewLabel("Click the cells to delete them!"),
 		gui.NewElement("hr", ""),
 	)
 
