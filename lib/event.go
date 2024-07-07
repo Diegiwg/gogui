@@ -44,17 +44,15 @@ func emitEvent(eventKind string, data interface{}, conn *websocket.Conn, ctx *co
 }
 
 type RenderHtmlPayload struct {
-	Id       string               `json:"id"`
-	Tag      string               `json:"tag"`
-	Content  string               `json:"content"`
-	Children []*RenderHtmlPayload `json:"children"`
+	Id         string               `json:"id"`
+	Tag        string               `json:"tag"`
+	Attributes []WidgetAttribute    `json:"attributes"`
+	Events     []WidgetEvent        `json:"events"`
+	Content    string               `json:"content"`
+	Style      string               `json:"style"`
+	Children   []*RenderHtmlPayload `json:"children"`
 }
 
 func emitRenderHtmlEvent(root *Widget, conn *websocket.Conn, ctx *context.Context) {
-	children := make([]*Widget, 0, len(root.children))
-	for _, child := range root.children {
-		children = append(children, child)
-	}
-
 	emitEvent("render-html", root.Render(), conn, ctx)
 }

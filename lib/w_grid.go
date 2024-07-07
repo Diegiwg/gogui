@@ -17,7 +17,6 @@ func NewGrid(rows int, cols int) *Widget {
 	return w
 }
 
-func (w *Widget) gridRender() string {
-	style := w.style.String()
-	return w.renderOpenTag() + " style=\"" + style + "\" class=\"grid-widget\" >" + "%s" + w.renderCloseTag()
+func (w *Widget) gridRender(obj *RenderHtmlPayload) {
+	obj.Attributes = append(obj.Attributes, WidgetAttribute{"class", "grid-widget"})
 }

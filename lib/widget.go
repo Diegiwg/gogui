@@ -6,7 +6,7 @@ import (
 )
 
 type WidgetTree map[int]*Widget
-type WidgetRender func() string
+type WidgetRender func(obj *RenderHtmlPayload)
 type WidgetEvents map[string]EventHandler
 
 type Widget struct {
@@ -82,20 +82,25 @@ func (w *Widget) RemoveChild(index int) {
 
 func (w *Widget) Render() *RenderHtmlPayload {
 	var content string = ""
-	data := w.GetData("content")
-	if data != nil {
-		content = data.(string)
+	if w.HasData("content") {
+		content = w.GetData("content").(string)
 	}
 
 	obj := &RenderHtmlPayload{
-		Id:       w.id,
-		Tag:      w.GetData("tag").(string),
-		Content:  content,
-		Children: make([]*RenderHtmlPayload, 0, len(w.children)),
+		Id:         w.id,
+		Tag:        w.GetData("tag").(string),
+		Attributes: make([]WidgetAttribute, 0),
+		Events:     w.Events(),
+		Content:    content,
+		Style:      w.style.String(),
 	}
 
-	childCounter := len(w.children)
-	for i := 0; i <= childCounter; i++ {
+	if w.render != nil {
+		w.render(obj)
+	}
+
+	obj.Children = make([]*RenderHtmlPayload, 0, len(w.children))
+	for i := 0; i <= len(w.children); i++ {
 		child := w.children[i]
 		if child == nil {
 			continue
@@ -104,4 +109,29 @@ func (w *Widget) Render() *RenderHtmlPayload {
 	}
 
 	return obj
+}
+
+// TODO: move to widgetAttribute.go
+type WidgetAttribute struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// TODO: move to widgetEvent.go
+type WidgetEvent struct {
+	Name string `json:"name"`
+}
+
+func (w *Widget) Events() []WidgetEvent {
+	events := make([]WidgetEvent, 0, len(w.events))
+	for name, _ := range w.events {
+		events = append(events, WidgetEvent{
+			Name: name,
+		})
+	}
+	return events
+}
+
+func (w *Widget) SetEvent(name string) {
+	w.events[name] = nil
 }
