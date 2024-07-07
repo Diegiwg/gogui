@@ -7,7 +7,7 @@ func NewButton(text string, onClick EventHandler) *Widget {
 	w.SetData("tag", "button")
 	w.SetData("content", text)
 
-	w.SetEvent("click")
+	w.SetEvent("click", onClick)
 
 	return w
 }

@@ -34,7 +34,6 @@ func (a *App) Dump() {
 }
 
 func (a *App) Run() error {
-	// dom.Register(a.Root)
 	registerEvent("html-content", func(widget *Widget, event *Event, conn *websocket.Conn, ctx *context.Context) {
 		emitRenderHtmlEvent(a.Root, conn, ctx)
 	})

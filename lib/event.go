@@ -3,7 +3,6 @@ package lib
 import (
 	"context"
 	"encoding/json"
-	"log"
 
 	"nhooyr.io/websocket"
 )
@@ -22,11 +21,12 @@ func registerEvent(action string, handler EventHandler) {
 }
 
 func handleEvent(event Event, conn *websocket.Conn, ctx *context.Context) {
-	log.Println("handleEvent")
+	if event.Action == "" {
+		return
+	}
 
 	handler := events[event.Action]
 	if handler == nil {
-		log.Println("event not found: " + event.Action)
 		return
 	}
 
@@ -34,9 +34,6 @@ func handleEvent(event Event, conn *websocket.Conn, ctx *context.Context) {
 }
 
 func emitEvent(eventKind string, data interface{}, conn *websocket.Conn, ctx *context.Context) {
-	serializeData, _ := json.Marshal(data)
-	log.Println("emitEvent: " + string(serializeData))
-
 	event := Event{eventKind, data}
 	serializeEvent, _ := json.Marshal(event)
 

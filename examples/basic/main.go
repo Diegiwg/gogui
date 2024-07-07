@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"strconv"
 
 	gui "github.com/Diegiwg/gogui/lib"
+	"nhooyr.io/websocket"
 )
 
 func main() {
@@ -27,7 +29,10 @@ func main() {
 
 	counter := 0
 	counterLabel := gui.NewLabel("Click Counter: " + strconv.Itoa(counter))
-	interactive.AddChild(counterLabel, gui.NewButton("Click me!", nil))
+	interactive.AddChild(counterLabel, gui.NewButton("Click me!", func(widget *gui.Widget, event *gui.Event, conn *websocket.Conn, ctx *context.Context) {
+		counter++
+		counterLabel.SetData("content", "Click Counter: "+strconv.Itoa(counter))
+	}))
 
 	grid := gui.NewGrid(3, 3)
 	for i := 0; i < 9; i++ {

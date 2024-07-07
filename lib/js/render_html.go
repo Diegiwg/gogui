@@ -29,7 +29,7 @@ const RenderHtml = `
 function renderHtml(root, widget, replace = false) {
     const el = document.createElement(widget.tag);
     el.id = widget.id;
-    el.style = widget.style
+    el.style = widget.style;
     el.innerHTML = widget.content;
 
     for (const attr of widget.attributes) {
@@ -41,8 +41,16 @@ function renderHtml(root, widget, replace = false) {
             console.log({
                 event: event.name,
                 target: widget.tag,
-                id: widget.id
+                id: widget.id,
+                action: widget.tag + "-" + event.name + "-" + widget.id,
             });
+
+            socket.send(
+                JSON.stringify({
+                    action: widget.tag + "-" + event.name + "-" + widget.id,
+                    data: {},
+                })
+            );
         });
     }
 
