@@ -1,28 +1,60 @@
 package lib
 
-type EventPayload struct {
-	Id     string                 `json:"id"`
-	Action string                 `json:"action"`
-	Data   map[string]interface{} `json:"data"`
+import (
+	"context"
+	"encoding/json"
+	"log"
+
+	"nhooyr.io/websocket"
+)
+
+type EventHandler func(widget *Widget, event *Event, conn *websocket.Conn, ctx *context.Context)
+
+type Event struct {
+	Action string      `json:"action"`
+	Data   interface{} `json:"data"`
 }
 
-type EventHandler func(widget *Widget, payload *EventPayload)
+var events = make(map[string]EventHandler)
 
-func (w *Widget) SetEvent(key string, handler EventHandler) {
-	w.events[key] = handler
+func registerEvent(action string, handler EventHandler) {
+	events[action] = handler
 }
 
-func (w *Widget) GetEvent(key string) *EventHandler {
-	event, ok := w.events[key]
+func handleEvent(event Event, conn *websocket.Conn, ctx *context.Context) {
+	log.Println("handleEvent")
 
-	if event == nil || !ok {
-		return nil
+	handler := events[event.Action]
+	if handler == nil {
+		log.Println("event not found: " + event.Action)
+		return
 	}
 
-	return &event
+	handler(nil, &event, conn, ctx)
 }
 
-func (w *Widget) HasEvent(key string) bool {
-	_, ok := w.events[key]
-	return ok
+func emitEvent(eventKind string, data interface{}, conn *websocket.Conn, ctx *context.Context) {
+	serializeData, _ := json.Marshal(data)
+	log.Println("emitEvent: " + string(serializeData))
+
+	event := Event{eventKind, data}
+	serializeEvent, _ := json.Marshal(event)
+
+	conn.Write(*ctx, websocket.MessageText, []byte(serializeEvent))
+}
+
+type RenderHtmlPayload struct {
+	Id       string               `json:"id"`
+	Tag      string               `json:"tag"`
+	Content  string               `json:"content"`
+	Children []*RenderHtmlPayload `json:"children"`
+}
+
+func emitRenderHtmlEvent(root *Widget, conn *websocket.Conn, ctx *context.Context) {
+	children := make([]*Widget, 0, len(root.children))
+	for _, child := range root.children {
+		children = append(children, child)
+	}
+
+	emitEvent("render-html", root.Render(), conn, ctx)
 }

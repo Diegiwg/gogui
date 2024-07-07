@@ -31,7 +31,7 @@ func (w *WidgetStyle) String() string {
 
 func (w *Widget) SetStyle(key string, value interface{}) {
 	w.style.Set(key, value)
-	w.emitContentUpdate()
+	// w.emitContentUpdate()
 }
 
 func (w *Widget) GetStyle(key string) interface{} {
@@ -45,5 +45,5 @@ func (w *Widget) HasStyle(key string) bool {
 
 func (w *Widget) DeleteStyle(key string) {
 	delete(w.style.data, key)
-	w.emitContentUpdate()
+	// w.emitContentUpdate()
 }

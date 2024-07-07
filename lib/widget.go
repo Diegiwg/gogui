@@ -32,10 +32,10 @@ func newWidget() *Widget {
 }
 
 func (w *Widget) Delete() {
-	parent := w.parent
+	// parent := w.parent
 	dom.RemoveWidget(w.id)
 	w.parent.RemoveChild(w.index)
-	parent.emitContentUpdate()
+	// parent.emitContentUpdate()
 }
 
 func (w *Widget) Dump(identLevel int) {
@@ -80,15 +80,28 @@ func (w *Widget) RemoveChild(index int) {
 	w.children[index] = nil
 }
 
-func (w *Widget) Html() string {
-	childHtml := ""
-	childCount := len(w.children)
-	for i := 1; i <= childCount; i++ {
-		if w.children[i] == nil {
-			continue
-		}
-		childHtml += w.children[i].Html()
+func (w *Widget) Render() *RenderHtmlPayload {
+	var content string = ""
+	data := w.GetData("content")
+	if data != nil {
+		content = data.(string)
 	}
 
-	return fmt.Sprintf(w.render(), childHtml)
+	obj := &RenderHtmlPayload{
+		Id:       w.id,
+		Tag:      w.GetData("tag").(string),
+		Content:  content,
+		Children: make([]*RenderHtmlPayload, 0, len(w.children)),
+	}
+
+	childCounter := len(w.children)
+	for i := 0; i <= childCounter; i++ {
+		child := w.children[i]
+		if child == nil {
+			continue
+		}
+		obj.Children = append(obj.Children, child.Render())
+	}
+
+	return obj
 }

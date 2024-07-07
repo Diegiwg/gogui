@@ -6,7 +6,6 @@ import (
 )
 
 func (app *App) requestHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method != "GET" {
 		return
 	}
@@ -15,7 +14,7 @@ func (app *App) requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == "/" {
 		w.Write([]byte(
-			"<html>" + bundle(app) + "<body>" + app.Root.Html() + "</body></html>",
+			"<html>" + bundle(app) + "<body id=\"app\"></body></html>",
 		))
 		return
 	}

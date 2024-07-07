@@ -4,7 +4,7 @@ type WidgetData map[string]interface{}
 
 func (w *Widget) SetData(key string, value interface{}) {
 	w.data[key] = value
-	w.emitContentUpdate()
+	// w.emitContentUpdate()
 }
 
 func (w *Widget) GetData(key string) interface{} {
@@ -18,10 +18,10 @@ func (w *Widget) HasData(key string) bool {
 
 func (w *Widget) DeleteData(key string) {
 	delete(w.data, key)
-	w.emitContentUpdate()
+	// w.emitContentUpdate()
 }
 
 func (w *Widget) ClearData() {
 	w.data = make(WidgetData)
-	w.emitContentUpdate()
+	// w.emitContentUpdate()
 }

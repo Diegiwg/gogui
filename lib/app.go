@@ -1,8 +1,11 @@
 package lib
 
 import (
+	"context"
 	"log"
 	"net/http"
+
+	"nhooyr.io/websocket"
 )
 
 type App struct {
@@ -31,7 +34,10 @@ func (a *App) Dump() {
 }
 
 func (a *App) Run() error {
-	dom.Register(a.Root)
+	// dom.Register(a.Root)
+	registerEvent("html-content", func(widget *Widget, event *Event, conn *websocket.Conn, ctx *context.Context) {
+		emitRenderHtmlEvent(a.Root, conn, ctx)
+	})
 
 	log.Println("INFO: Server is running on http://" + a.config.serverAddress())
 

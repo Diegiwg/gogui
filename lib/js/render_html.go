@@ -12,21 +12,21 @@ const RenderHtml = `
 /**
  * @param {Widget} widget
  */
-function renderHtml(widget) {
-    const app = document.querySelector("#app");
-    if (is_null(app)) {
-        return Logger.log("app not found");
-    }
-
-    const root = document.createElement(widget.tag);
-    root.id = widget.id;
-    root.innerHTML = widget.content;
+function renderHtml(root, widget, replace = false) {
+    const el = document.createElement(widget.tag);
+    el.id = widget.id;
+    el.innerHTML = widget.content;
 
     for (const child of widget.children) {
-        root.appendChild(renderHtml(child));
+        console.log(child);
+        renderHtml(el, child);
     }
 
-    app.replaceChildren(root);
+    if (replace) {
+        root.replaceChildren(el);
+    } else {
+        root.appendChild(el);
+    }
 }
 window.renderHtml = renderHtml;
 `

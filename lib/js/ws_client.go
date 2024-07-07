@@ -4,22 +4,29 @@ const WsClient = `
 const socket = new WebSocket("ws://%s/ws");
 window.socket = socket;
 
+/**
+ * @typedef EventRequest
+ * @property {string} action
+ * @property {string} data
+ */
+
+socket.onopen = () => {
+    socket.send(JSON.stringify({ action: "html-content" }));
+};
+
 socket.onmessage =
     /** @param {{data: string}} msg */
     (msg) => {
-        /** @type {string} */
-        let action;
-        /** @type {string} */
-        let id;
-        /** @type {string} */
-        let data;
+        console.log("received: " + msg.data);
 
-        [action, data] = msg.data.split("|");
-        [action, id] = action.split(":");
-
-        switch (action) {
-            case "update-element-content":
-                updateElementContent(id, data);
+        /** @type {EventRequest} */
+        const event = JSON.parse(msg.data);
+        switch (event.action) {
+            case "render-html":
+                window.renderHtml(app, event.data, true);
+                break;
+            case "update":
+                window.updateElementContent(event.data);
                 break;
         }
     };
