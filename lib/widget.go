@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var widgetPool = make([]string, 0)
+var widgetPool = make(map[string]*Widget, 0)
 
 type WidgetTree map[int]*Widget
 type WidgetRender func(obj *RenderHtmlPayload)
@@ -29,15 +29,16 @@ func (w *Widget) GetId() string {
 
 func newWidget() *Widget {
 	id := generateId(10)
-
-	widgetPool = append(widgetPool, id)
-	return &Widget{
+	w := &Widget{
 		id:       id,
 		data:     make(WidgetData),
 		children: make(WidgetTree),
 		events:   make([]WidgetEvent, 0),
 		style:    NewWidgetStyle(),
 	}
+
+	widgetPool[id] = w
+	return w
 }
 
 func (w *Widget) Delete() {
@@ -147,7 +148,6 @@ type WidgetData map[string]interface{}
 
 func (w *Widget) SetData(key string, value interface{}) {
 	w.data[key] = value
-	// w.emitContentUpdate()
 }
 
 func (w *Widget) GetData(key string) interface{} {
@@ -157,6 +157,11 @@ func (w *Widget) GetData(key string) interface{} {
 func (w *Widget) HasData(key string) bool {
 	_, ok := w.data[key]
 	return ok
+}
+
+func (w *Widget) UpdateData(key string, value interface{}) {
+	w.data[key] = value
+	emitRenderHtmlEvent(w)
 }
 
 func (w *Widget) DeleteData(key string) {

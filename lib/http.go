@@ -10,6 +10,9 @@ import (
 	"nhooyr.io/websocket"
 )
 
+var wsConn *websocket.Conn
+var wsCtx *context.Context
+
 func (app *App) requestHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		return
@@ -53,7 +56,9 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		handleEvent(event, conn, &ctx)
+		wsConn = conn
+		wsCtx = &ctx
+		handleEvent(event)
 
 		err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
 		if err != nil {

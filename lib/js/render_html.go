@@ -21,16 +21,43 @@ const RenderHtml = `
  * @property {string} content
  * @property {string} style
  * @property {Widget[]} children
+ * @property {Widget} parent
  */
 
+
+// /**
+//  * @type {Widget[]}
+//  */
+// var widgetPool = [];
+// window.widgetPool = widgetPool;
+
 /**
+ * @param {HTMLElement} root
  * @param {Widget} widget
  */
-function renderHtml(root, widget, replace = false) {
+function renderHtml(root, widget, replace = false, parent = null) {
+    // TODO: move this for proper check function
+
+    // Check if widget already exists
+    const existing = document.getElementById(widget.id);
+    if (existing) {
+        // Check if widget is the same
+        if (existing.innerHTML === widget.content) {
+            return;
+        }
+
+        existing.innerHTML = widget.content;
+        return;
+    }
+
     const el = document.createElement(widget.tag);
     el.id = widget.id;
     el.style = widget.style;
     el.innerHTML = widget.content;
+
+    if (parent) {
+        el.setAttribute("data-parent", parent.id);
+    }
 
     for (const attr of widget.attributes) {
         el.setAttribute(attr.name, attr.value);
@@ -47,6 +74,7 @@ function renderHtml(root, widget, replace = false) {
 
             socket.send(
                 JSON.stringify({
+                    id: widget.id,
                     action: widget.tag + "-" + event.name + "-" + widget.id,
                     data: {},
                 })

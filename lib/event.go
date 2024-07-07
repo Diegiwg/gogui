@@ -1,15 +1,17 @@
 package lib
 
 import (
-	"context"
 	"encoding/json"
+	"fmt"
+	"log"
 
 	"nhooyr.io/websocket"
 )
 
-type EventHandler func(widget *Widget, event *Event, conn *websocket.Conn, ctx *context.Context)
+type EventHandler func(widget *Widget, event *Event)
 
 type Event struct {
+	Id     string      `json:"id"`
 	Action string      `json:"action"`
 	Data   interface{} `json:"data"`
 }
@@ -20,7 +22,7 @@ func registerEvent(action string, handler EventHandler) {
 	events[action] = handler
 }
 
-func handleEvent(event Event, conn *websocket.Conn, ctx *context.Context) {
+func handleEvent(event Event) {
 	if event.Action == "" {
 		return
 	}
@@ -30,14 +32,26 @@ func handleEvent(event Event, conn *websocket.Conn, ctx *context.Context) {
 		return
 	}
 
-	handler(nil, &event, conn, ctx)
+	widget := widgetPool[event.Id]
+	handler(widget, &event)
 }
 
-func emitEvent(eventKind string, data interface{}, conn *websocket.Conn, ctx *context.Context) {
-	event := Event{eventKind, data}
+func emitEvent(eventKind string, data interface{}) {
+	if wsConn == nil || wsCtx == nil {
+		parsedData, _ := json.Marshal(data)
+
+		log.Println(fmt.Sprintf("ERROR: Cannot emit event %s, no websocket connection. Data: %s", eventKind, parsedData))
+		return
+	}
+
+	event := Event{
+		Id:     "",
+		Action: eventKind,
+		Data:   data,
+	}
 	serializeEvent, _ := json.Marshal(event)
 
-	conn.Write(*ctx, websocket.MessageText, []byte(serializeEvent))
+	wsConn.Write(*wsCtx, websocket.MessageText, []byte(serializeEvent))
 }
 
 type RenderHtmlPayload struct {
@@ -50,6 +64,6 @@ type RenderHtmlPayload struct {
 	Children   []*RenderHtmlPayload `json:"children"`
 }
 
-func emitRenderHtmlEvent(root *Widget, conn *websocket.Conn, ctx *context.Context) {
-	emitEvent("render-html", root.Render(), conn, ctx)
+func emitRenderHtmlEvent(root *Widget) {
+	emitEvent("render-html", root.Render())
 }
