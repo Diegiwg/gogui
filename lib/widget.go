@@ -115,6 +115,10 @@ func (w *Widget) Render() *RenderHtmlPayload {
 	return obj
 }
 
+func (w *Widget) Update() {
+	emitRenderHtmlEvent(w.id, w)
+}
+
 // ATTRIBUTE SECTION //
 
 type WidgetAttribute struct {
@@ -154,11 +158,6 @@ func (w *Widget) GetData(key string) interface{} {
 func (w *Widget) HasData(key string) bool {
 	_, ok := w.data[key]
 	return ok
-}
-
-func (w *Widget) UpdateData(key string, value interface{}) {
-	w.data[key] = value
-	emitRenderHtmlEvent(w.id, w)
 }
 
 func (w *Widget) DeleteData(key string) {
@@ -237,4 +236,8 @@ func (w *Widget) HasStyle(key string) bool {
 
 func (w *Widget) DeleteStyle(key string) {
 	delete(w.style.data, key)
+}
+
+func (w *Widget) ClearStyle() {
+	w.style.data = make(map[string]interface{})
 }

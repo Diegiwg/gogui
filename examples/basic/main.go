@@ -1,11 +1,19 @@
 package main
 
 import (
+	"crypto/rand"
+	"fmt"
 	"log"
 	"strconv"
 
 	gui "github.com/Diegiwg/gogui/lib"
 )
+
+func randomColor() string {
+	b := make([]byte, 4)
+	_, _ = rand.Read(b)
+	return fmt.Sprintf("#%02x%02x%02x", b[0], b[1], b[2])
+}
 
 func main() {
 	config := gui.NewConfig()
@@ -29,7 +37,10 @@ func main() {
 	counterLabel := gui.NewLabel("Click Counter: " + strconv.Itoa(counter))
 	interactive.AddChild(counterLabel, gui.NewButton("Click me!", func(widget *gui.Widget, event *gui.Event) {
 		counter++
-		counterLabel.UpdateData("content", "Click Counter: "+strconv.Itoa(counter))
+		counterLabel.SetData("content", "Click Counter: "+strconv.Itoa(counter))
+
+		counterLabel.SetStyle("color", randomColor())
+		counterLabel.Update()
 	}))
 
 	grid := gui.NewGrid(3, 3)
