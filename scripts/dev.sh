@@ -12,5 +12,5 @@ cd ../../../
 # Compile CSS
 
 # Run Basic Example
-cd examples/basic
+cd examples/"$1"
 go run .
