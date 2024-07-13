@@ -28,7 +28,7 @@ func NewApp(config *Config) (*App, error) {
 
 func (a *App) Run() error {
 	registerEvent("html-content", func(widget *Widget, event *Event) {
-		emitRenderHtmlEvent(a.Root)
+		emitRenderHtmlEvent("app", a.Root)
 	})
 
 	log.Println("INFO: Server is running on http://" + a.config.serverAddress())

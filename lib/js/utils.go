@@ -7,11 +7,11 @@ function is_null(value) {
 
 class Logger {
     static log(message) {
-        console.log(message);
+        // console.log(message);
     }
 
     static error(message) {
-        console.error(message);
+        // console.error(message);
     }
 }
 `

@@ -158,17 +158,15 @@ func (w *Widget) HasData(key string) bool {
 
 func (w *Widget) UpdateData(key string, value interface{}) {
 	w.data[key] = value
-	emitRenderHtmlEvent(w)
+	emitRenderHtmlEvent(w.id, w)
 }
 
 func (w *Widget) DeleteData(key string) {
 	delete(w.data, key)
-	// w.emitContentUpdate()
 }
 
 func (w *Widget) ClearData() {
 	w.data = make(WidgetData)
-	// w.emitContentUpdate()
 }
 
 // KIND SECTION //
@@ -226,7 +224,6 @@ func (w *WidgetStyle) String() string {
 
 func (w *Widget) SetStyle(key string, value interface{}) {
 	w.style.Set(key, value)
-	// w.emitContentUpdate()
 }
 
 func (w *Widget) GetStyle(key string) interface{} {
@@ -240,5 +237,4 @@ func (w *Widget) HasStyle(key string) bool {
 
 func (w *Widget) DeleteStyle(key string) {
 	delete(w.style.data, key)
-	// w.emitContentUpdate()
 }

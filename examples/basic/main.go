@@ -47,7 +47,7 @@ func main() {
 		interactive,
 		gui.NewElement("hr", ""),
 		grid,
-        gui.NewLabel("Click the cells to delete them!"),
+		gui.NewLabel("Click the cells to delete them!"),
 		gui.NewElement("hr", ""),
 	)
 

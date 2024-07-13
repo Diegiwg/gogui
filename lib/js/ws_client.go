@@ -17,13 +17,25 @@ socket.onopen = () => {
 socket.onmessage =
     /** @param {{data: string}} msg */
     (msg) => {
-        console.log("received: " + msg.data);
+        let targetId = app;
 
         /** @type {EventRequest} */
         const event = JSON.parse(msg.data);
         switch (event.action) {
             case "render-html":
-                window.renderHtml(app, event.data, true);
+                if (event.data.targetId !== "app") {
+                    targetId = document.getElementById(event.data.targetId);
+                    if (!targetId) {
+                        console.log(
+                            "target with id " +
+                                event.data.targetId +
+                                " not found"
+                        );
+                        return;
+                    }
+                }
+
+                window.renderHtml(targetId, event.data.widget, true);
                 break;
 
             case "delete-widget":

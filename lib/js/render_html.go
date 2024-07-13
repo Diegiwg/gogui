@@ -24,12 +24,6 @@ const RenderHtml = `
  * @property {Widget} parent
  */
 
-// /**
-//  * @type {Widget[]}
-//  */
-// var widgetPool = [];
-// window.widgetPool = widgetPool;
-
 /**
  * @param {HTMLElement} root
  * @param {Widget} widget
@@ -41,6 +35,8 @@ function renderHtml(root, widget, replace = false, parent = null) {
     el.id = widget.id;
     el.style = widget.style;
     el.innerHTML = widget.content;
+
+    el.setAttribute("data-widget", JSON.stringify(widget));
 
     if (parent) {
         el.setAttribute("data-parent", parent.id);
@@ -83,9 +79,8 @@ function isNewRender(root, widget) {
     const existing = document.getElementById(widget.id);
     if (!existing) return true;
 
-    if (existing.innerHTML !== widget.content) {
-        existing.innerHTML = widget.content;
-    }
+    const existingWidget = JSON.parse(existing.getAttribute("data-widget"));
+    if (existingWidget !== widget) return true;
 
     return false;
 }

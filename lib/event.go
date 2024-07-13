@@ -64,6 +64,10 @@ type RenderHtmlPayload struct {
 	Children   []*RenderHtmlPayload `json:"children"`
 }
 
-func emitRenderHtmlEvent(root *Widget) {
-	emitEvent("render-html", root.Render())
+func emitRenderHtmlEvent(targetId string, widget *Widget) {
+	data := map[string]interface{}{
+		"targetId": targetId,
+		"widget":   widget.Render(),
+	}
+	emitEvent("render-html", data)
 }
